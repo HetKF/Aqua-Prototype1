@@ -1,0 +1,188 @@
+[TITLE]
+AquaShield Prototype Network - Mumbai Zone Demo
+
+[JUNCTIONS]
+;ID              Elev        Demand      Pattern
+J_Bhandup        20          15                      ;
+J_Ghatkopar      18          12                      ;
+J_Kurla          15          10                      ;
+J_Vikhroli       22          8                       ;
+J_Andheri        25          20                      ;
+J_JogeshwariE    24          9                       ;
+J_Dadar          12          14                      ;
+J_Worli          14          10                      ;
+J_MalabarHill    45          6                       ;
+J_Parel          16          11                      ;
+J_Sion           19          9                       ;
+J_Chembur        17          13                      ;
+J_Powai          30          7                       ;
+J_Vidyavihar     21          8                       ;
+J_Matunga        13          10                      ;
+
+[RESERVOIRS]
+;ID              Head        Pattern
+R_TreatmentPlant 10                                  ;
+
+[TANKS]
+;ID              Elevation   InitLevel   MinLevel    MaxLevel    Diameter    MinVol      VolCurve
+T_ElevatedTank   40          5           0.5         10          18          0                   ;
+
+[PIPES]
+;ID                       Node1           Node2           Length      Diameter    Roughness   MinorLoss   Status
+P1_Bhandup_Ghatkopar      J_Bhandup       J_Ghatkopar     800         350         100         0           Open    ;
+P2_Ghatkopar_Kurla        J_Ghatkopar     J_Kurla         600         300         100         0           Open    ;
+P3_Bhandup_Vikhroli       J_Bhandup       J_Vikhroli      700         250         100         0           Open    ;
+P4_Vikhroli_Andheri       J_Vikhroli      J_Andheri       900         300         100         0           Open    ;
+P5_Andheri_JogeshwariE    J_Andheri       J_JogeshwariE   500         200         100         0           Open    ;
+P6_Dadar_Worli            J_Dadar         J_Worli         600         250         100         0           Open    ;
+P7_Dadar_Parel            J_Dadar         J_Parel         400         200         100         0           Open    ;
+P8_Parel_Sion             J_Parel         J_Sion          550         180         100         0           Open    ;
+P10_Vikhroli_Powai        J_Vikhroli      J_Powai         750         200         100         0           Open    ;
+P11_Ghatkopar_Vidyavihar  J_Ghatkopar     J_Vidyavihar    500         180         100         0           Open    ;
+P12_Sion_Matunga          J_Sion          J_Matunga       450         180         100         0           Open    ;
+P13_Vidyavihar_Matunga    J_Vidyavihar    J_Matunga       400         150         100         0           Open    ;
+P14_Chembur_Sion          J_Chembur       J_Sion          600         150         100         0           Open    ;
+P15_JogeshwariE_Powai     J_JogeshwariE   J_Powai         800         150         100         0           Open    ;
+P16_MalabarHill_Tank      J_MalabarHill   T_ElevatedTank  200         150         100         0           Open    ;
+P17_Worli_MalabarHill     J_Worli         J_MalabarHill   700         200         100         0           Open    ;
+
+[VALVES]
+;ID (isolation valve, modeled as a short-run pipe segment)
+;   Node1           Node2           Diameter    Type    Setting     MinorLoss
+V1_Kurla_Dadar      J_Kurla         J_Dadar     300         TCV     0           0
+V2_Worli_MalabarHl  J_Worli         J_MalabarHill 200       TCV     0           0
+V3_Vikhroli_Andheri J_Vikhroli      J_Andheri   300         TCV     0           0
+V4_Kurla_Chembur    J_Kurla         J_Chembur   220         TCV     0           0
+
+[PUMPS]
+;ID       Node1              Node2       Parameters
+PU1       R_TreatmentPlant   J_Bhandup   HEAD PumpCurve1
+
+[CURVES]
+;ID           X-Value     Y-Value
+PumpCurve1    0           150
+PumpCurve1    160         110
+PumpCurve1    320         40
+
+[PATTERNS]
+;ID          Multipliers
+;ContamPulse: contamination "on" (1) during hours 2-4, "off" (0) all other hours - 24 hourly values
+ContamPulse  0  0  1  1  1  0  0  0  0  0  0  0
+ContamPulse  0  0  0  0  0  0  0  0  0  0  0  0
+
+[CONTROLS]
+
+[RULES]
+
+[ENERGY]
+ Global Efficiency  75
+ Global Price        0
+ Demand Charge       0
+
+[EMITTERS]
+
+[QUALITY]
+;ID              InitQual
+J_Bhandup        0
+J_Ghatkopar      0
+J_Kurla          0
+J_Vikhroli       0
+J_Andheri        0
+J_JogeshwariE    0
+J_Dadar          0
+J_Worli          0
+J_MalabarHill    0
+J_Parel          0
+J_Sion           0
+J_Chembur        0
+J_Powai          0
+J_Vidyavihar     0
+J_Matunga        0
+R_TreatmentPlant 0
+T_ElevatedTank   0
+
+[SOURCES]
+;Node       Type    Strength    Pattern
+;J_Kurla contamination event: 50 mg/min injected during hours 2-4 (see ContamPulse pattern), 0 otherwise
+J_Kurla     MASS    50          ContamPulse
+
+[REACTIONS]
+ Order Bulk            1
+ Order Tank            1
+ Order Wall            1
+ Global Bulk           0
+ Global Wall           0
+ Limiting Potential    0
+ Roughness Correlation 0
+
+[MIXING]
+;Tank             Model
+T_ElevatedTank    MIXED
+
+[TIMES]
+ Duration            24:00
+ Hydraulic Timestep  1:00
+ Quality Timestep    0:05
+ Pattern Timestep    1:00
+ Pattern Start       0:00
+ Report Timestep     1:00
+ Report Start        0:00
+ Start ClockTime     0:00
+ Statistic            NONE
+
+[REPORT]
+ Status              Yes
+ Summary             Yes
+ Page                0
+
+[OPTIONS]
+ Units               LPS
+ Headloss            H-W
+ Specific Gravity    1.0
+ Viscosity           1.0
+ Trials              40
+ Accuracy             0.001
+ CHECKFREQ            2
+ MAXCHECK             10
+ DAMPLIMIT             0
+ Unbalanced          Continue 10
+ Pattern             1
+ Demand Multiplier   1.0
+ Emitter Exponent    0.5
+ Quality             Chemical mg/L
+ Diffusivity         1.0
+ Tolerance            0.01
+
+[COORDINATES]
+;Node             X-Coord         Y-Coord
+J_Bhandup         500             800
+J_Ghatkopar       800             700
+J_Kurla           1000            500
+J_Vikhroli        700             1000
+J_Andheri         900             1300
+J_JogeshwariE     700             1400
+J_Dadar           1200            200
+J_Worli           1400            0
+J_MalabarHill     1600            -100
+J_Parel           1300            350
+J_Sion            1500            450
+J_Chembur         1200            600
+J_Powai           900             1200
+J_Vidyavihar      1000            750
+J_Matunga         1350            600
+R_TreatmentPlant  200             800
+T_ElevatedTank    1800            -150
+
+[VERTICES]
+
+[LABELS]
+
+[BACKDROP]
+
+[TAGS]
+
+[DEMANDS]
+
+[STATUS]
+
+[END]
